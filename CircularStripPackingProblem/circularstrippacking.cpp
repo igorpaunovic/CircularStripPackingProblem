@@ -1,13 +1,12 @@
 #include "circularstrippacking.h"
 
-std::vector<Krug> CircularStripPacking::generisiNasumicneKrugove(int brojKrugova) {
+std::vector<std::unique_ptr<Krug>> CircularStripPacking::generisiNasumicneKrugove(int brojKrugova) {
     const std::vector<QPoint> pozicije = generisiNasumicneTacke(brojKrugova);
-    std::vector<Krug> krugovi;
+    std::vector<std::unique_ptr<Krug>> krugovi;
     QRandomGenerator generator;
     for (const QPoint &pozicija : pozicije) {
         int poluprecnik = generator.bounded(80) + 20;
-        Krug* krug = new Krug(pozicija, poluprecnik);
-        krugovi.push_back(*krug);
+        krugovi.push_back(std::make_unique<Krug>(pozicija, poluprecnik));
     }
     return krugovi;
 };
@@ -46,8 +45,8 @@ void CircularStripPacking::crtajAlgoritam(QPainter *painter) const
 
     painter->drawRect(_pravougaonik);
 
-    for (const Krug &krug : _krugovi) {
-        krug.draw(painter);
+    for (const auto& krug : _krugovi) {
+        krug->crtaj(painter);
     }
 }
 

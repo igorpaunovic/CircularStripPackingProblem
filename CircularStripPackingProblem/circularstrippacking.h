@@ -19,10 +19,10 @@ public:
     void crtajAlgoritam(QPainter *painter) const final;
     void pokreniNaivniAlgoritam() final;
     void crtajNaivniAlgoritam(QPainter *painter) const final;
-    std::vector<Krug> generisiNasumicneKrugove(int brojKrugova);
+    std::vector<std::unique_ptr<Krug>> generisiNasumicneKrugove(int brojKrugova);
 
 private:
-    std::vector<Krug> _krugovi;
+    std::vector<std::unique_ptr<Krug>> _krugovi;
     int _yPoz;
     QRect _pravougaonik;
 };
