@@ -1,7 +1,10 @@
 #ifndef CIRCULARSTRIPPACKING_H
 #define CIRCULARSTRIPPACKING_H
 
+#include <QRandomGenerator>
+
 #include "algoritambaza.h"
+#include "krug.h"
 
 class CircularStripPacking : public AlgoritamBaza
 {
@@ -16,9 +19,10 @@ public:
     void crtajAlgoritam(QPainter *painter) const final;
     void pokreniNaivniAlgoritam() final;
     void crtajNaivniAlgoritam(QPainter *painter) const final;
+    std::vector<Krug> generisiNasumicneKrugove(int brojKrugova);
 
 private:
-    std::vector<QPoint> _krugovi;
+    std::vector<Krug> _krugovi;
     int _yPoz;
 };
 

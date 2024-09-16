@@ -1,5 +1,17 @@
 #include "circularstrippacking.h"
 
+std::vector<Krug> CircularStripPacking::generisiNasumicneKrugove(int brojKrugova) {
+    const std::vector<QPoint> pozicije = generisiNasumicneTacke(brojKrugova);
+    std::vector<Krug> krugovi;
+    QRandomGenerator generator;
+    for (const QPoint &pozicija : pozicije) {
+        int poluprecnik = generator.bounded(80) + 20;
+        Krug* krug = new Krug(pozicija, poluprecnik);
+        krugovi.push_back(*krug);
+    }
+    return krugovi;
+};
+
 CircularStripPacking::CircularStripPacking(QWidget *pCrtanje,
                            int pauzaKoraka,
                            const bool &naivni,
@@ -7,10 +19,14 @@ CircularStripPacking::CircularStripPacking(QWidget *pCrtanje,
                            int brojKrugova)
     : AlgoritamBaza(pCrtanje, pauzaKoraka, naivni), _yPoz(0)
 {
-    if (imeDatoteke == "")
-        _krugovi = generisiNasumicneTacke(brojKrugova);
-    else
-        _krugovi = ucitajPodatkeIzDatoteke(imeDatoteke);
+    if (imeDatoteke == "") {
+        // TODO: pozicija kruga nije bitna na pocetku, bitni su samo poluprecnici, uprosti to stavljajuci ih sve na nule
+        _krugovi = generisiNasumicneKrugove(brojKrugova);
+    }
+    // TODO: Dodaj ucitavanje kruga iz fajla
+    // else {
+    //     _krugovi = ucitajPodatkeIzDatoteke(imeDatoteke);
+    // }
 }
 
 void CircularStripPacking::pokreniAlgoritam()
@@ -28,24 +44,8 @@ void CircularStripPacking::crtajAlgoritam(QPainter *painter) const
 {
     if (!painter) return;
 
-    QPen p = painter->pen();
-    p.setColor(Qt::magenta);
-    p.setWidth(2);
-    p.setCapStyle(Qt::RoundCap);
-
-    painter->setPen(p);
-    painter->drawLine(0, _yPoz, _pCrtanje->width(), _yPoz);
-
-    p.setWidth(5);
-    for(const QPoint &pt : _krugovi)
-    {
-        if (pt.y() < _yPoz)
-            p.setColor(Qt::red);
-        else
-            p.setColor(Qt::black);
-
-        painter->setPen(p);
-        painter->drawPoint(pt);
+    for (const Krug &krug : _krugovi) {
+        krug.draw(painter);
     }
 }
 

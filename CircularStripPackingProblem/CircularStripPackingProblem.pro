@@ -12,6 +12,7 @@ SOURCES += \
     algoritambaza.cpp \
     animacijanit.cpp \
     circularstrippacking.cpp \
+    krug.cpp \
     main.cpp \
     mainwindow.cpp \
     oblastcrtanja.cpp \
@@ -24,6 +25,7 @@ HEADERS += \
     animacijanit.h \
     circularstrippacking.h \
     config.h \
+    krug.h \
     mainwindow.h \
     oblastcrtanja.h \
     oblastcrtanjaopengl.h \
