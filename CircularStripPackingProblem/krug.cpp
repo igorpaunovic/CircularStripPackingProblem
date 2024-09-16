@@ -7,5 +7,5 @@ Krug::Krug(const QPoint& centar, int poluprecnik, const QColor& boja, QWidget *p
 void Krug::draw(QPainter *painter) const {
     painter->setPen(Qt::blue);
     painter->setBrush(Qt::yellow);
-    painter->drawEllipse(_centar.x(), _centar.y(), 2*_poluprecnik, 2*_poluprecnik);
+    painter->drawEllipse(_centar.x(), _centar.y()/3, 2*_poluprecnik, 2*_poluprecnik);
 }

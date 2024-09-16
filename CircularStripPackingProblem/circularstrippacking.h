@@ -24,6 +24,7 @@ public:
 private:
     std::vector<Krug> _krugovi;
     int _yPoz;
+    QRect _pravougaonik;
 };
 
 #endif // CIRCULARSTRIPPACKING_H

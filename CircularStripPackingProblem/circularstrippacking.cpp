@@ -17,7 +17,7 @@ CircularStripPacking::CircularStripPacking(QWidget *pCrtanje,
                            const bool &naivni,
                            std::string imeDatoteke,
                            int brojKrugova)
-    : AlgoritamBaza(pCrtanje, pauzaKoraka, naivni), _yPoz(0)
+    : AlgoritamBaza(pCrtanje, pauzaKoraka, naivni), _yPoz(0), _pravougaonik(QRect(50, 450, 1400, 400))
 {
     if (imeDatoteke == "") {
         // TODO: pozicija kruga nije bitna na pocetku, bitni su samo poluprecnici, uprosti to stavljajuci ih sve na nule
@@ -43,6 +43,8 @@ void CircularStripPacking::pokreniAlgoritam()
 void CircularStripPacking::crtajAlgoritam(QPainter *painter) const
 {
     if (!painter) return;
+
+    painter->drawRect(_pravougaonik);
 
     for (const Krug &krug : _krugovi) {
         krug.draw(painter);
