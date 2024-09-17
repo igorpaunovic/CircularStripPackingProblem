@@ -11,7 +11,8 @@ class Krug
 {
 public:
     Krug(const QPoint& centar = QPoint(0,0), const int poluprecnik = 0, const QColor& boja = Qt::black, QWidget *pCrtanja = nullptr);
-    void draw(QPainter *painter) const;
+    void crtaj(QPainter *painter) const;
+    void pomeri(QPoint noviCentar);
 
     QPoint _centar;
     int _poluprecnik;
