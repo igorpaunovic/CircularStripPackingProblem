@@ -21,6 +21,9 @@ public:
     void crtajNaivniAlgoritam(QPainter *painter) const final;
     std::vector<Krug*> generisiNasumicneKrugove(int brojKrugova);
     bool uPravougaoniku(Krug krug) const;
+    int pravougaonikLevo() const;
+    int pravougaonikGore() const;
+    int pravougaonikDole() const;
 
 private:
     std::vector<Krug*> _krugovi;

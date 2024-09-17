@@ -14,3 +14,19 @@ void Krug::pomeri(QPoint noviCentar) {
     _centar = noviCentar;
     _boja = Qt::red;
 }
+
+int Krug::gore() const {
+    return _centar.y() + _poluprecnik;
+};
+
+int Krug::dole() const {
+    return _centar.y() - _poluprecnik;
+};
+
+int Krug::levo() const {
+    return _centar.x() - _poluprecnik;
+};
+
+int Krug::desno() const {
+    return _centar.x() + _poluprecnik;
+};

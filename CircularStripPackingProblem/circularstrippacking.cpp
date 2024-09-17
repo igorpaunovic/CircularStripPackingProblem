@@ -30,12 +30,24 @@ CircularStripPacking::CircularStripPacking(QWidget *pCrtanje,
     // }
 }
 
+int CircularStripPacking::pravougaonikLevo() const {
+    return _pravougaonik.left();
+};
+
+int CircularStripPacking::pravougaonikGore() const {
+    return _pravougaonik.bottom();
+};
+
+int CircularStripPacking::pravougaonikDole() const {
+    return _pravougaonik.top();
+};
+
 bool CircularStripPacking::uPravougaoniku(Krug krug) const {
-    if (krug._centar.y() + krug._poluprecnik > _pravougaonik.bottom()) {
+    if (krug.gore() > pravougaonikGore()) {
         return false;
-    } else if (krug._centar.y() - krug._poluprecnik < _pravougaonik.top()) {
+    } else if (krug.dole() < pravougaonikDole()) {
         return false;
-    } else if (krug._centar.x() - krug._poluprecnik < _pravougaonik.left()) {
+    } else if (krug.levo() < pravougaonikLevo()) {
         return false;
     } else {
         return true;

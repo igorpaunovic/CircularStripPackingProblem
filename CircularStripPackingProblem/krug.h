@@ -13,6 +13,10 @@ public:
     Krug(const QPoint& centar = QPoint(0,0), const int poluprecnik = 0, const QColor& boja = Qt::black, QWidget *pCrtanja = nullptr);
     void crtaj(QPainter *painter) const;
     void pomeri(QPoint noviCentar);
+    int gore() const;
+    int dole() const;
+    int levo() const;
+    int desno() const;
 
     QPoint _centar;
     int _poluprecnik;
