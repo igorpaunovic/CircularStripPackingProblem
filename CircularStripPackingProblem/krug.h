@@ -6,6 +6,8 @@
 #include <QPaintEvent>
 #include <QWidget>
 #include <QPainter>
+#include <vector>
+#include <QtMath>
 
 class Krug
 {
@@ -17,6 +19,8 @@ public:
     int dole() const;
     int levo() const;
     int desno() const;
+    bool neSeceKrug(Krug& krug) const;
+    bool neSeceKrugove(std::vector<Krug*>& krugovi) const;
 
     QPoint _centar;
     int _poluprecnik;

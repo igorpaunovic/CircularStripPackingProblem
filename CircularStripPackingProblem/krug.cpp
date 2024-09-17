@@ -30,3 +30,22 @@ int Krug::levo() const {
 int Krug::desno() const {
     return _centar.x() + _poluprecnik;
 };
+
+bool Krug::neSeceKrug(Krug& krug) const {
+    int udaljenostX = (_centar.x() - krug._centar.x());
+    int udaljenostY = (_centar.y() - krug._centar.y());
+    qDebug() << "Udaljenost centara: " << int(qSqrt(udaljenostX*udaljenostX + udaljenostY*udaljenostY));
+    qDebug() << "Zbir Poluprecnika: " << int(qSqrt(udaljenostX*udaljenostX + udaljenostY*udaljenostY));
+    return (_poluprecnik + krug._poluprecnik <= int(qSqrt(udaljenostX*udaljenostX + udaljenostY*udaljenostY)));
+};
+
+bool Krug::neSeceKrugove(std::vector<Krug*>& krugovi) const {
+    for (const auto &krug : krugovi) {
+        if (!neSeceKrug(*krug)) {
+            qDebug() << "NE SECE";
+            return false;
+        }
+    }
+    qDebug() << "SECE";
+    return true;
+};

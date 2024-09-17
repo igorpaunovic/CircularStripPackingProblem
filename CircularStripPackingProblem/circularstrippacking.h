@@ -20,7 +20,7 @@ public:
     void pokreniNaivniAlgoritam() final;
     void crtajNaivniAlgoritam(QPainter *painter) const final;
     std::vector<Krug*> generisiNasumicneKrugove(int brojKrugova);
-    bool uPravougaoniku(Krug krug) const;
+    bool pripadaPravougaoniku(Krug krug) const;
     int pravougaonikLevo() const;
     int pravougaonikGore() const;
     int pravougaonikDole() const;

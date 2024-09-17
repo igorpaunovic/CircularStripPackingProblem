@@ -42,7 +42,7 @@ int CircularStripPacking::pravougaonikDole() const {
     return _pravougaonik.top();
 };
 
-bool CircularStripPacking::uPravougaoniku(Krug krug) const {
+bool CircularStripPacking::pripadaPravougaoniku(Krug krug) const {
     if (krug.gore() > pravougaonikGore()) {
         return false;
     } else if (krug.dole() < pravougaonikDole()) {
@@ -63,10 +63,11 @@ void CircularStripPacking::pokreniAlgoritam()
     QRandomGenerator generator;
     while (true) {
         for (const auto &krug : _krugovi) {
-            if (!uPravougaoniku(*krug)) {
+            if (!pripadaPravougaoniku(*krug)) {
                 int x = generator.bounded(1000);
                 int y = generator.bounded(1000);
-                if (uPravougaoniku(Krug(QPoint(x,y), krug->_poluprecnik))) {
+                Krug* potencijalniKrug = new Krug(QPoint(x,y), krug->_poluprecnik);
+                if (pripadaPravougaoniku(*potencijalniKrug) and potencijalniKrug->neSeceKrugove(_krugovi)) {
                     krug->pomeri(QPoint(x,y));
                 }
             }
