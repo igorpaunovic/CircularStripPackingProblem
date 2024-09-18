@@ -21,8 +21,9 @@ CircularStripPacking::CircularStripPacking(QWidget *pCrtanje,
     if (imeDatoteke == "") {
         // TODO: pozicija kruga nije bitna na pocetku, bitni su samo poluprecnici, uprosti to stavljajuci ih sve na nule
         _krugovi = generisiNasumicneKrugove(brojKrugova);
-        qDebug() << _pravougaonik.left() << " " << _pravougaonik.right();
-        qDebug() << _pravougaonik.bottom() << " " << _pravougaonik.top();
+        for (const auto &krug : _krugovi) {
+            _nepostavljeniKrugovi.insert(new Krug(krug->_centar, krug->_poluprecnik));
+        }
     }
     // TODO: Dodaj ucitavanje kruga iz fajla
     // else {
@@ -54,6 +55,12 @@ bool CircularStripPacking::pripadaPravougaoniku(Krug krug) const {
     }
 }
 
+
+
+std::set<QPoint> CircularStripPacking::moguciUglovi(const Krug& krug) const {
+
+};
+
 // double CircularStripPacking::MLDP() {
 
 // }
@@ -67,9 +74,11 @@ void CircularStripPacking::pokreniAlgoritam()
                 int x = generator.bounded(1000);
                 int y = generator.bounded(1000);
                 Krug* potencijalniKrug = new Krug(QPoint(x,y), krug->_poluprecnik);
-                if (pripadaPravougaoniku(*potencijalniKrug) and potencijalniKrug->neSeceKrugove(_krugovi)) {
+                if (pripadaPravougaoniku(*potencijalniKrug) and potencijalniKrug->neSeceKrugove(_postavljeniKrugovi)) {
                     krug->pomeri(QPoint(x,y));
+                    _postavljeniKrugovi.insert(krug);
                 }
+                delete potencijalniKrug;
             }
         }
         AlgoritamBaza_updateCanvasAndBlock();

@@ -30,10 +30,13 @@ HEADERS += \
     oblastcrtanja.h \
     oblastcrtanjaopengl.h \
     pomocnefunkcije.h \
-    timemeasurementthread.h
+    timemeasurementthread.h \
+    tomsolver.h
 
 FORMS += \
     mainwindow.ui
+
+INCLUDEPATH += /usr/include/eigen3
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
