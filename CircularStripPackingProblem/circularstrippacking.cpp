@@ -1,12 +1,12 @@
 #include "circularstrippacking.h"
 
-std::vector<Krug*> CircularStripPacking::generisiNasumicneKrugove(int brojKrugova) {
+std::set<Krug*> CircularStripPacking::generisiNasumicneKrugove(int brojKrugova) {
     const std::vector<QPoint> pozicije = generisiNasumicneTacke(brojKrugova);
-    std::vector<Krug*> krugovi;
+    std::set<Krug*> krugovi;
     QRandomGenerator generator;
     for (const QPoint &pozicija : pozicije) {
         int poluprecnik = generator.bounded(100) + 30;
-        krugovi.push_back(new Krug(QPoint(pozicija.x(), pozicija.y()/3), poluprecnik));
+        krugovi.insert(new Krug(QPoint(pozicija.x(), pozicija.y()/3), poluprecnik));
     }
     return krugovi;
 };
@@ -51,15 +51,148 @@ bool CircularStripPacking::pripadaPravougaoniku(Krug krug) const {
     } else if (krug.levo() < pravougaonikLevo()) {
         return false;
     } else {
+        qDebug() << "Pripada";
         return true;
     }
 }
 
+bool CircularStripPacking::legalanKrug(const Krug& krug) const {
+    if (pripadaPravougaoniku(krug) && krug.neSeceKrugove(_postavljeniKrugovi)) {
+        return true;
+    }
+    return false;
+}
 
+bool CircularStripPacking::krugDodirujePravougaonik(const Krug& krug) const {
+    if (krug._centar.y() + krug._poluprecnik == pravougaonikGore()) {
+        return true;
+    } else if (krug._centar.y() - krug._poluprecnik == pravougaonikDole()) {
+        return true;
+    } else if (krug._centar.x() - krug._poluprecnik == pravougaonikLevo()) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
-std::set<QPoint> CircularStripPacking::moguciUglovi(const Krug& krug) const {
+bool CircularStripPacking::krugDodirujePravougaonikGore(const Krug& krug) const {
+    if (krug._centar.y() + krug._poluprecnik == pravougaonikGore()) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
-};
+bool CircularStripPacking::krugDodirujePravougaonikDole(const Krug& krug) const {
+    if (krug._centar.y() - krug._poluprecnik == pravougaonikDole()) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool CircularStripPacking::krugDodirujePravougaonikLevo(const Krug& krug) const {
+    if (krug._centar.x() - krug._poluprecnik == pravougaonikLevo()) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+int izracunajKatetu(int c, int a) {
+    return int(qSqrt(c*c - a*a));
+}
+
+std::vector<QPoint> CircularStripPacking::moguciUglovi(const Krug& krug) const {
+    std::vector<QPoint> potencijalniUglovi;
+    // Uglovi izmedju dve stranice pravougaonika
+    QPoint centarLevoDole(pravougaonikLevo() + krug._poluprecnik, pravougaonikDole() + krug._poluprecnik);
+    Krug potencijalniKrug(centarLevoDole, krug._poluprecnik);
+    if (legalanKrug(potencijalniKrug)) {
+        qDebug("DODAT levo dole");
+        potencijalniUglovi.push_back(centarLevoDole);
+    }
+    // Gore levo
+    QPoint centarLevoGore(pravougaonikLevo() + krug._poluprecnik, pravougaonikGore() - krug._poluprecnik);
+    potencijalniKrug._centar = centarLevoGore;
+    if (legalanKrug(potencijalniKrug)) {
+        qDebug("Dodat levo gore");
+        potencijalniUglovi.push_back(centarLevoGore);
+    }
+
+    // Uglovi izmedju stranice i kruga
+    int i = 0;
+    for (const auto &_krug : _postavljeniKrugovi) {
+        i++;
+        qDebug() << "iteracija: " << i;
+        qDebug("OVDE");
+        if (pravougaonikGore()-_krug->gore() <= 2*krug._poluprecnik) {
+            qDebug() << "USO gore krug";
+            int dx = izracunajKatetu(krug._poluprecnik + _krug->_poluprecnik, krug._poluprecnik - (pravougaonikGore()-_krug->_centar.y()));
+            QPoint centar(_krug->_centar.x()+dx, pravougaonikGore()-krug._poluprecnik);
+            potencijalniKrug._centar = centar;
+            if (legalanKrug(potencijalniKrug)) {
+                potencijalniUglovi.push_back(centar);
+                qDebug() << "dodao gore krug";
+            }
+            centar.setX(_krug->_centar.x()-dx);
+            potencijalniKrug._centar = centar;
+            if (legalanKrug(potencijalniKrug)) {
+                potencijalniUglovi.push_back(centar);
+                qDebug() << "dodao gore krug";
+            }
+        }
+        qDebug() << _krug->dole() - pravougaonikDole() << " " << 2 * krug._poluprecnik;
+        if (_krug->dole() - pravougaonikDole() <= 2*krug._poluprecnik) {
+            qDebug() << "USO dole krug";
+            int dx = izracunajKatetu(krug._poluprecnik + _krug->_poluprecnik, krug._poluprecnik - (_krug->_centar.y()-pravougaonikDole()));
+            QPoint centar(_krug->_centar.x()+dx, pravougaonikDole()+krug._poluprecnik);
+            potencijalniKrug._centar = centar;
+            qDebug() << "Poluprecnik: " << krug._poluprecnik;
+            if (legalanKrug(potencijalniKrug)) {
+                potencijalniUglovi.push_back(centar);
+                qDebug() << "dodao dole krug";
+            }
+            centar.setX(_krug->_centar.x()-dx);
+            potencijalniKrug._centar = centar;
+            if (legalanKrug(potencijalniKrug)) {
+                potencijalniUglovi.push_back(centar);
+                qDebug() << "dodao dole krug";
+            }
+        }
+        if (_krug->levo() - pravougaonikLevo() <= 2*krug._poluprecnik) {
+            qDebug() << "USO levo krug";
+            int dy = izracunajKatetu(krug._poluprecnik + _krug->_poluprecnik, krug._poluprecnik - (_krug->_centar.x()-pravougaonikLevo()));
+            QPoint centar(pravougaonikLevo()+krug._poluprecnik, _krug->_centar.y()+dy);
+            potencijalniKrug._centar = centar;
+            if (legalanKrug(potencijalniKrug)) {
+                potencijalniUglovi.push_back(centar);
+                qDebug() << "dodao levo krug";
+            }
+            centar.setY(_krug->_centar.y()-dy);
+            potencijalniKrug._centar = centar;
+            if (legalanKrug(potencijalniKrug)) {
+                potencijalniUglovi.push_back(centar);
+                qDebug() << "dodao levo krug";
+            }
+        }
+    }
+    // Uglovi izmedju dva kruga
+    for (const auto &krug1 : _postavljeniKrugovi) {
+        qDebug("IZMEDJU DVA KRUGA");
+        for (const auto &krug2 : _postavljeniKrugovi) {
+            std::vector<QPoint> ugloviIzmedjuDvaKruga= krug.ugaoIzmedjuDvaKruga(*krug1, *krug2);
+            for (const auto &ugao : ugloviIzmedjuDvaKruga) {
+                potencijalniKrug._centar = ugao;
+                if (legalanKrug(potencijalniKrug)) {
+                    potencijalniUglovi.push_back(ugao);
+                }
+            }
+        }
+    }
+    qDebug("GOTOVO");
+    return potencijalniUglovi;
+}
 
 // double CircularStripPacking::MLDP() {
 
@@ -67,22 +200,22 @@ std::set<QPoint> CircularStripPacking::moguciUglovi(const Krug& krug) const {
 
 void CircularStripPacking::pokreniAlgoritam()
 {
-    QRandomGenerator generator;
-    while (true) {
-        for (const auto &krug : _krugovi) {
-            if (!pripadaPravougaoniku(*krug)) {
-                int x = generator.bounded(1000);
-                int y = generator.bounded(1000);
-                Krug* potencijalniKrug = new Krug(QPoint(x,y), krug->_poluprecnik);
-                if (pripadaPravougaoniku(*potencijalniKrug) and potencijalniKrug->neSeceKrugove(_postavljeniKrugovi)) {
-                    krug->pomeri(QPoint(x,y));
-                    _postavljeniKrugovi.insert(krug);
-                }
-                delete potencijalniKrug;
-            }
+    for (auto it = _nepostavljeniKrugovi.begin(); it != _nepostavljeniKrugovi.end();) {
+        Krug* krug = *it;
+        std::vector<QPoint> potencijalnePozicije = moguciUglovi(*krug);
+        qDebug() << "Broj mogucih pozicija" << potencijalnePozicije.size();
+        if (potencijalnePozicije.size() > 0) {
+            qDebug() << potencijalnePozicije[0].x() << " " << potencijalnePozicije[0].y();
+            krug->pomeri(potencijalnePozicije[0]);
+            _postavljeniKrugovi.insert(krug);
+            qDebug() << "Ostalo postaviti: " << _nepostavljeniKrugovi.size();
+            _nepostavljeniKrugovi.erase(it++);
+            AlgoritamBaza_updateCanvasAndBlock();
+        } else {
+            ++it;
         }
-        AlgoritamBaza_updateCanvasAndBlock();
     }
+    AlgoritamBaza_updateCanvasAndBlock();
 
     emit animacijaZavrsila();
 }
@@ -93,7 +226,11 @@ void CircularStripPacking::crtajAlgoritam(QPainter *painter) const
 
     painter->drawRect(_pravougaonik);
 
-    for (const auto &krug : _krugovi) {
+    for (const auto &krug : _postavljeniKrugovi) {
+        krug->crtaj(painter);
+    }
+
+    for (const auto &krug : _nepostavljeniKrugovi) {
         krug->crtaj(painter);
     }
 }

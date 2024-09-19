@@ -22,8 +22,8 @@ public:
     int levo() const;
     int desno() const;
     bool neSeceKrug(Krug& krug) const;
-    bool neSeceKrugove(std::set<Krug*>& krugovi) const;
-    std::vector<QPoint*> ugaoIzmedjuDvaKruga(const Krug &krug1, const Krug &krug2) const;
+    bool neSeceKrugove(const std::set<Krug*>& krugovi) const;
+    std::vector<QPoint> ugaoIzmedjuDvaKruga(const Krug &krug1, const Krug &krug2) const;
 
     QPoint _centar;
     int _poluprecnik;

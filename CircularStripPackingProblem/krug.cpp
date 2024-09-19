@@ -35,10 +35,11 @@ int Krug::desno() const {
 bool Krug::neSeceKrug(Krug& krug) const {
     int udaljenostX = (_centar.x() - krug._centar.x());
     int udaljenostY = (_centar.y() - krug._centar.y());
-    return (_poluprecnik + krug._poluprecnik <= int(qSqrt(udaljenostX*udaljenostX + udaljenostY*udaljenostY)));
+    qDebug() << "Malo je falilo: " << _poluprecnik + krug._poluprecnik << " <= " << ceil(qSqrt(udaljenostX*udaljenostX + udaljenostY*udaljenostY) + 1);
+    return (_poluprecnik + krug._poluprecnik <= ceil(qSqrt(udaljenostX*udaljenostX + udaljenostY*udaljenostY)) + 1);
 };
 
-bool Krug::neSeceKrugove(std::set<Krug*>& krugovi) const {
+bool Krug::neSeceKrugove(const std::set<Krug*>& krugovi) const {
     for (const auto &krug : krugovi) {
         if (!neSeceKrug(*krug)) {
             return false;
@@ -47,7 +48,7 @@ bool Krug::neSeceKrugove(std::set<Krug*>& krugovi) const {
     return true;
 };
 
-std::vector<QPoint*> Krug::ugaoIzmedjuDvaKruga(const Krug &krug1, const Krug &krug2) const {
+std::vector<QPoint> Krug::ugaoIzmedjuDvaKruga(const Krug &krug1, const Krug &krug2) const {
     double x1 = krug1._centar.x(), y1 = krug1._centar.y(), r1 = krug1._poluprecnik;
     double x2 = krug2._centar.x(), y2 = krug2._centar.y(), r2 = krug2._poluprecnik;
     double r3 = _poluprecnik;
@@ -55,10 +56,11 @@ std::vector<QPoint*> Krug::ugaoIzmedjuDvaKruga(const Krug &krug1, const Krug &kr
     double d1 = r1 + r3;
     double d2 = r2 + r3;
 
-    std::vector<QPoint*> uglovi;
+    std::vector<QPoint> uglovi;
 
     // Slucaj kad je krug dovoljno mali pa ne dodiruje oba kruga istovremeno
     if (r1 + r2 + 2*r3 < int(qSqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2)))) {
+        qDebug() << "Izbego krug";
         return uglovi;
     }
 
@@ -83,8 +85,6 @@ std::vector<QPoint*> Krug::ugaoIzmedjuDvaKruga(const Krug &krug1, const Krug &kr
             {"d1", d1},
             {"d2", d2},
         });
-
-        std::cout << f << std::endl;
 
         // solve
         auto ans = Solve(f);
@@ -118,9 +118,8 @@ std::vector<QPoint*> Krug::ugaoIzmedjuDvaKruga(const Krug &krug1, const Krug &kr
         int xMirror = 2 * xProjekcija - x;
         int yMirror = 2 * yProjekcija - y;
 
-        uglovi.push_back(new QPoint(int(x), int(y)));
-        uglovi.push_back(new QPoint(int(xMirror), int(yMirror)));
-
+        uglovi.push_back(QPoint(int(x), int(y)));
+        uglovi.push_back(QPoint(int(xMirror), int(yMirror)));
         return uglovi;
     } catch (const std::exception &err) {
         qDebug() << "Ne postoji takav krug";
