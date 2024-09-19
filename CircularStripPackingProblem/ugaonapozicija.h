@@ -12,12 +12,18 @@ enum StranicaPravougaounika {
     Nijedna
 };
 
-class ugaonaPozicija
+class UgaonaPozicija
 {
 public:
-    ugaonaPozicija(QPoint pozicija);
+    UgaonaPozicija(
+        const Krug& krug,
+        Krug* krug1 = nullptr,
+        Krug* krug2 = nullptr,
+        StranicaPravougaounika stranica1 = StranicaPravougaounika::Nijedna,
+        StranicaPravougaounika stranica2 = StranicaPravougaounika::Nijedna
+    );
 
-    QPoint _pozicija;
+    Krug _krug;
     Krug* _krug1;
     Krug* _krug2;
     StranicaPravougaounika _stranica1;

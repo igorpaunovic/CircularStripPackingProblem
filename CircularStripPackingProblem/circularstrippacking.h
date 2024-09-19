@@ -7,6 +7,7 @@
 
 #include "algoritambaza.h"
 #include "krug.h"
+#include "ugaonapozicija.h"
 
 class CircularStripPacking : public AlgoritamBaza
 {
@@ -27,7 +28,7 @@ public:
     int pravougaonikGore() const;
     int pravougaonikDole() const;
     QPoint ugaoIzmedjuDvaKruga(const Krug& krug1, const Krug& krug2) const;
-    std::vector<QPoint> moguciUglovi(const Krug& krug) const;
+    std::vector<UgaonaPozicija> moguciUglovi(const Krug& krug) const;
     bool legalanKrug(const Krug& krug) const;
     bool krugDodirujePravougaonik(const Krug& krug) const;
     bool krugDodirujePravougaonikGore(const Krug& krug) const;

@@ -1,5 +1,12 @@
 #include "ugaonapozicija.h"
 
-ugaonaPozicija::ugaonaPozicija(QPoint pozicija)
-    : _pozicija(pozicija), _krug1(nullptr), _krug2(nullptr), _stranica1(StranicaPravougaounika::Nijedna), _stranica2(StranicaPravougaounika::Nijedna)
-{}
+UgaonaPozicija::UgaonaPozicija(
+    const Krug& krug,
+    Krug* krug1,
+    Krug* krug2,
+    StranicaPravougaounika stranica1,
+    StranicaPravougaounika stranica2
+) : _krug1(krug1), _krug2(krug2), _stranica1(stranica1), _stranica2(stranica2)
+{
+    _krug = Krug(krug._centar, krug._poluprecnik);
+}
