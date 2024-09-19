@@ -33,6 +33,8 @@ public:
     bool krugDodirujePravougaonikGore(const Krug& krug) const;
     bool krugDodirujePravougaonikDole(const Krug& krug) const;
     bool krugDodirujePravougaonikLevo(const Krug& krug) const;
+    int MLDP(const Krug& krug) const;
+    bool BSLA(std::vector<Krug>& krugovi, bool& zadovoljivo) const;
 
 private:
     std::set<Krug*> _krugovi;

@@ -18,7 +18,8 @@ SOURCES += \
     oblastcrtanja.cpp \
     oblastcrtanjaopengl.cpp \
     pomocnefunkcije.cpp \
-    timemeasurementthread.cpp
+    timemeasurementthread.cpp \
+    ugaonapozicija.cpp
 
 HEADERS += \
     algoritambaza.h \
@@ -31,7 +32,8 @@ HEADERS += \
     oblastcrtanjaopengl.h \
     pomocnefunkcije.h \
     timemeasurementthread.h \
-    tomsolver.h
+    tomsolver.h \
+    ugaonapozicija.h
 
 FORMS += \
     mainwindow.ui

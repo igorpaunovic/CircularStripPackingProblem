@@ -190,12 +190,40 @@ std::vector<QPoint> CircularStripPacking::moguciUglovi(const Krug& krug) const {
             }
         }
     }
-    qDebug("GOTOVO");
     return potencijalniUglovi;
 }
 
-// double CircularStripPacking::MLDP() {
+int CircularStripPacking::MLDP(const Krug& krug) const {
+    double mldp = 99999;
 
+    for (const auto& _krug : _postavljeniKrugovi) {
+        int tmp = krug.udaljenostOrKruga(*_krug);
+        if (tmp < mldp) {
+            mldp = tmp;
+        }
+    }
+
+    int tmp = pravougaonikGore() - krug.gore();
+    if (tmp < mldp) {
+        mldp = tmp;
+    }
+
+    tmp = krug.dole() - pravougaonikDole();
+    if (tmp < mldp) {
+        mldp = tmp;
+    }
+
+    tmp = krug.levo() - pravougaonikLevo();
+    if (tmp < mldp) {
+        mldp = tmp;
+    }
+
+    return mldp;
+}
+
+// bool CircularStripPacking::BSLA(std::vector<Krug>& krugovi, bool& zadovoljivo) const {
+//     int w = krugovi.size();
+//     std::vector<QPoint>
 // }
 
 void CircularStripPacking::pokreniAlgoritam()

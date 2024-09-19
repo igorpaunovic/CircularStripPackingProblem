@@ -126,3 +126,9 @@ std::vector<QPoint> Krug::ugaoIzmedjuDvaKruga(const Krug &krug1, const Krug &kru
         return uglovi;
     }
 };
+
+int Krug::udaljenostOrKruga(const Krug& krug) const {
+    int dx = _centar.x() - krug._centar.x();
+    int dy = _centar.y() - krug._centar.y();
+    return int(qSqrt(dx*dx+dy*dy)) - (_poluprecnik + krug._poluprecnik);
+};
