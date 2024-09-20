@@ -16,14 +16,20 @@ class UgaonaPozicija
 {
 public:
     UgaonaPozicija(
-        const Krug& krug,
+        QPoint pozicija,
+        Krug* krug,
+        int mldp,
         Krug* krug1 = nullptr,
         Krug* krug2 = nullptr,
         StranicaPravougaounika stranica1 = StranicaPravougaounika::Nijedna,
         StranicaPravougaounika stranica2 = StranicaPravougaounika::Nijedna
     );
+    void postaviKrug() const;
+    int MLDP() const;
 
-    Krug _krug;
+    QPoint _pozicija;
+    Krug* _krug;
+    int _mldp;
     Krug* _krug1;
     Krug* _krug2;
     StranicaPravougaounika _stranica1;
