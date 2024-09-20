@@ -25,7 +25,6 @@ public:
         StranicaPravougaounika stranica2 = StranicaPravougaounika::Nijedna
     );
     void postaviKrug() const;
-    int MLDP() const;
 
     QPoint _pozicija;
     Krug* _krug;

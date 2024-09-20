@@ -1,3 +1,3 @@
 #include "cvor.h"
 
-Cvor::Cvor(Krug* krug, int mldp) : _krug(krug), _mldp(mldp) {}
+Cvor::Cvor(Krug* krug, double gustina) : _krug(krug), _gustina(gustina) {}

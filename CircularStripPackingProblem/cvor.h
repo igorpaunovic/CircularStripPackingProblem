@@ -6,10 +6,10 @@
 class Cvor
 {
 public:
-    Cvor(Krug* krug, int mldp = 99999);
+    Cvor(Krug* krug, double gustina = 99999);
 
     Krug* _krug;
-    int _mldp;
+    double _gustina;
 };
 
 #endif // CVOR_H

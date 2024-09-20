@@ -12,8 +12,15 @@ void Krug::crtaj(QPainter *painter) const {
 }
 
 void Krug::pomeri(QPoint noviCentar) {
+    _prethodniCentar = _centar;
     _centar = noviCentar;
     _boja = Qt::red;
+}
+
+void Krug::vrati() {
+    qDebug() << "VRACAM!";
+    _centar = _prethodniCentar;
+    _boja = Qt::black;
 }
 
 int Krug::gore() const {

@@ -35,6 +35,10 @@ int CircularStripPacking::pravougaonikLevo() const {
     return _pravougaonik.left();
 };
 
+int CircularStripPacking::pravougaonikDesno() const {
+    return _pravougaonik.right();
+};
+
 int CircularStripPacking::pravougaonikGore() const {
     return _pravougaonik.bottom();
 };
@@ -49,6 +53,8 @@ bool CircularStripPacking::pripadaPravougaoniku(Krug krug) const {
     } else if (krug.dole() < pravougaonikDole()) {
         return false;
     } else if (krug.levo() < pravougaonikLevo()) {
+        return false;
+    } else if (krug.desno() > pravougaonikDesno()) {
         return false;
     } else {
         qDebug() << "Pripada";
@@ -108,6 +114,7 @@ int CircularStripPacking::MLDP(const Krug& krug, Krug* krug1, Krug* krug2, Stran
 
     for (const auto& _krug : _postavljeniKrugovi) {
         if (_krug == krug1 || _krug == krug2) {
+            qDebug("Preskacem za krug - mldp!");
             continue;
         }
         int tmp = krug.udaljenostOrKruga(*_krug);
@@ -183,10 +190,7 @@ std::vector<UgaonaPozicija> CircularStripPacking::moguciUglovi(Krug* krug) const
                     UgaonaPozicija(
                         centar,
                         krug,
-                        MLDP(potencijalniKrug),
-                        _krug,
-                        nullptr,
-                        StranicaPravougaounika::Gore
+                        MLDP(potencijalniKrug , _krug, nullptr, StranicaPravougaounika::Gore)
                     )
                 );
                 qDebug() << "dodao gore krug";
@@ -198,10 +202,7 @@ std::vector<UgaonaPozicija> CircularStripPacking::moguciUglovi(Krug* krug) const
                     UgaonaPozicija(
                         centar,
                         krug,
-                        MLDP(potencijalniKrug),
-                        _krug,
-                        nullptr,
-                        StranicaPravougaounika::Gore
+                        MLDP(potencijalniKrug, _krug, nullptr, StranicaPravougaounika::Gore)
                     )
                 );
                 qDebug() << "dodao gore krug";
@@ -219,10 +220,7 @@ std::vector<UgaonaPozicija> CircularStripPacking::moguciUglovi(Krug* krug) const
                     UgaonaPozicija(
                         centar,
                         krug,
-                        MLDP(potencijalniKrug),
-                        _krug,
-                        nullptr,
-                        StranicaPravougaounika::Dole
+                        MLDP(potencijalniKrug, _krug, nullptr, StranicaPravougaounika::Dole)
                     )
                 );
                 qDebug() << "dodao dole krug";
@@ -234,10 +232,7 @@ std::vector<UgaonaPozicija> CircularStripPacking::moguciUglovi(Krug* krug) const
                     UgaonaPozicija(
                         centar,
                         krug,
-                        MLDP(potencijalniKrug),
-                        _krug,
-                        nullptr,
-                        StranicaPravougaounika::Dole
+                        MLDP(potencijalniKrug, _krug, nullptr, StranicaPravougaounika::Dole)
                     )
                 );
                 qDebug() << "dodao dole krug";
@@ -253,10 +248,7 @@ std::vector<UgaonaPozicija> CircularStripPacking::moguciUglovi(Krug* krug) const
                     UgaonaPozicija(
                         centar,
                         krug,
-                        MLDP(potencijalniKrug),
-                        _krug,
-                        nullptr,
-                        StranicaPravougaounika::Levo
+                        MLDP(potencijalniKrug, _krug, nullptr, StranicaPravougaounika::Levo)
                     )
                 );
                 qDebug() << "dodao levo krug";
@@ -268,10 +260,7 @@ std::vector<UgaonaPozicija> CircularStripPacking::moguciUglovi(Krug* krug) const
                     UgaonaPozicija(
                         centar,
                         krug,
-                        MLDP(potencijalniKrug),
-                        _krug,
-                        nullptr,
-                        StranicaPravougaounika::Levo
+                        MLDP(potencijalniKrug, _krug, nullptr, StranicaPravougaounika::Levo)
                     )
                 );
                 qDebug() << "dodao levo krug";
@@ -286,7 +275,7 @@ std::vector<UgaonaPozicija> CircularStripPacking::moguciUglovi(Krug* krug) const
             for (const auto &ugao : ugloviIzmedjuDvaKruga) {
                 potencijalniKrug._centar = ugao;
                 if (legalanKrug(potencijalniKrug)) {
-                    potencijalniUglovi.push_back(UgaonaPozicija(ugao, krug, MLDP(potencijalniKrug), krug1, krug2));
+                    potencijalniUglovi.push_back(UgaonaPozicija(ugao, krug, MLDP(potencijalniKrug, krug1, krug2)));
                 }
             }
         }
@@ -294,10 +283,15 @@ std::vector<UgaonaPozicija> CircularStripPacking::moguciUglovi(Krug* krug) const
     return potencijalniUglovi;
 }
 
-void CircularStripPacking::PohlepnaMLDPProcedura() {
+void CircularStripPacking::PohlepnaMLDPProcedura(double& gustina) {
+    double povrsinaPostavljenihKrugova = 0.0;
     for (auto it = _nepostavljeniKrugovi.begin(); it != _nepostavljeniKrugovi.end();) {
         Krug* krug = *it;
         std::vector<UgaonaPozicija> ugaonePozicije = moguciUglovi(krug);
+        qDebug() << "MLDP:";
+        for (const auto& pozicija : ugaonePozicije) {
+            qDebug() << pozicija._mldp;
+        }
         auto najboljaPozicijaIt = std::min_element(ugaonePozicije.begin(), ugaonePozicije.end(),
             [](const UgaonaPozicija& a, const UgaonaPozicija& b) {
                 return a._mldp < b._mldp;
@@ -305,15 +299,17 @@ void CircularStripPacking::PohlepnaMLDPProcedura() {
         );
 
         if (najboljaPozicijaIt == ugaonePozicije.end()) {
+            gustina = povrsinaPostavljenihKrugova/(_pravougaonik.height()*_pravougaonik.width());
             return;
         }
-
+        povrsinaPostavljenihKrugova += (krug->_poluprecnik * krug->_poluprecnik) * M_PI;
         UgaonaPozicija najboljaPozicija = *najboljaPozicijaIt;
         najboljaPozicija.postaviKrug();
         _postavljeniKrugovi.insert(krug);
         _nepostavljeniKrugovi.erase(it++);
         AlgoritamBaza_updateCanvasAndBlock();
     }
+    gustina = povrsinaPostavljenihKrugova/(_pravougaonik.height()*_pravougaonik.width());
 }
 
 std::vector<Cvor> CircularStripPacking::LABP(std::vector<Cvor>& B, bool& zadovoljivo) {
@@ -339,25 +335,62 @@ std::vector<Cvor> CircularStripPacking::LABP(std::vector<Cvor>& B, bool& zadovol
         ugaonaPozicija.postaviKrug();
         _postavljeniKrugovi.insert(ugaonaPozicija._krug);
         _nepostavljeniKrugovi.erase(ugaonaPozicija._krug);
-        Bw.push_back(Cvor(ugaonaPozicija._krug, ugaonaPozicija._mldp));
-
-        PohlepnaMLDPProcedura();
+        double gustina;
+        PohlepnaMLDPProcedura(gustina);
+        Bw.push_back(Cvor(ugaonaPozicija._krug, gustina));
         if (_nepostavljeniKrugovi.empty()) {
+            // TODO - Sacuvaj najbolje resenje
             _nepostavljeniKrugovi = nepostavljeniKrugoviKopija;
             _postavljeniKrugovi = postavljeniKrugoviKopija;
             zadovoljivo = true;
             return Bw;
+        }
+        std::set<Krug*> krugoviZaVracanje;
+        // Vrati dodate krugove na svoje mesto
+        std::set_difference(_postavljeniKrugovi.begin(), _postavljeniKrugovi.end(),
+                            postavljeniKrugoviKopija.begin(), postavljeniKrugoviKopija.end(),
+                            std::inserter(krugoviZaVracanje, krugoviZaVracanje.begin()));
+        qDebug() << "Krugovi za vracanje: " << krugoviZaVracanje.size() ;
+        for (const auto& krug : krugoviZaVracanje) {
+            krug->vrati();
         }
         _nepostavljeniKrugovi = nepostavljeniKrugoviKopija;
         _postavljeniKrugovi = postavljeniKrugoviKopija;
     }
 
     std::sort(Bw.begin(), Bw.end(), [](const Cvor &a, const Cvor &b) {
-        return a._mldp < b._mldp;
+        return a._gustina > b._gustina;
     });
 
     w = std::min(w, int(Bw.size()));
     return std::vector<Cvor>(Bw.begin(), Bw.begin() + w);
+
+}
+
+int CircularStripPacking::BSLA(Cvor cvor, int w, int L1, int L2, int tolerancija) {
+    int najboljeL = 99999;
+    std::vector<Cvor> B;
+    std::vector<Cvor> Bw;
+    int l = 1;
+    bool zadovoljivo = false;
+    while (L2 - L1 > tolerancija) {
+        B.push_back(cvor);
+        int L = (L2-L1)/2;
+        while (!B.empty() && zadovoljivo == false) {
+            Bw = LABP(B, zadovoljivo);
+            if (zadovoljivo) {
+                najboljeL = L;
+                L2 = L;
+            } else {
+                l++;
+                B = Bw;
+                Bw.clear();
+            }
+        }
+        if (zadovoljivo == false) {
+            L1 = L;
+        }
+    }
 }
 
 void CircularStripPacking::pokreniAlgoritam()

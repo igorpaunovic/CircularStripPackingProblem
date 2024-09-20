@@ -11,12 +11,14 @@
 #include <set>
 #include <Eigen/Dense>
 
+
 class Krug
 {
 public:
     Krug(const QPoint& centar = QPoint(0,0), const int poluprecnik = 0, const QColor& boja = Qt::black, QWidget *pCrtanja = nullptr);
     void crtaj(QPainter *painter) const;
     void pomeri(QPoint noviCentar);
+    void vrati();
     int gore() const;
     int dole() const;
     int levo() const;
@@ -27,6 +29,7 @@ public:
     int udaljenostOrKruga(const Krug& krug) const;
 
     QPoint _centar;
+    QPoint _prethodniCentar;
     int _poluprecnik;
     QColor _boja;
     QWidget* _pCrtanja;

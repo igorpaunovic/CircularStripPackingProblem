@@ -26,6 +26,7 @@ public:
     std::set<Krug*> generisiNasumicneKrugove(int brojKrugova);
     bool pripadaPravougaoniku(Krug krug) const;
     int pravougaonikLevo() const;
+    int pravougaonikDesno() const;
     int pravougaonikGore() const;
     int pravougaonikDole() const;
     QPoint ugaoIzmedjuDvaKruga(const Krug& krug1, const Krug& krug2) const;
@@ -37,7 +38,8 @@ public:
     bool krugDodirujePravougaonikLevo(const Krug& krug) const;
     int MLDP(const Krug& krug, Krug* krug1 = nullptr, Krug* krug2 = nullptr, StranicaPravougaounika stranica1 = StranicaPravougaounika::Nijedna, StranicaPravougaounika stranica2 = StranicaPravougaounika::Nijedna) const;
     std::vector<Cvor> LABP(std::vector<Cvor>& B, bool& zadovoljivo);
-    void PohlepnaMLDPProcedura();
+    void PohlepnaMLDPProcedura(double& gustina);
+    int BSLA(Cvor cvor, int w, int L, int D, int tolerancija = 30);
 
 private:
     std::set<Krug*> _krugovi;
