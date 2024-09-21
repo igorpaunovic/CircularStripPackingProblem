@@ -37,9 +37,9 @@ public:
     bool krugDodirujePravougaonikDole(const Krug& krug) const;
     bool krugDodirujePravougaonikLevo(const Krug& krug) const;
     int MLDP(const Krug& krug, Krug* krug1 = nullptr, Krug* krug2 = nullptr, StranicaPravougaounika stranica1 = StranicaPravougaounika::Nijedna, StranicaPravougaounika stranica2 = StranicaPravougaounika::Nijedna) const;
-    std::vector<Cvor> LABP(std::vector<Cvor>& B, bool& zadovoljivo);
+    std::vector<Cvor> LABP(std::vector<Cvor>& B, int w, bool& zadovoljivo);
     void PohlepnaMLDPProcedura(double& gustina);
-    int BSLA(Cvor cvor, int w, int L, int D, int tolerancija = 30);
+    int BSLA(Cvor cvor, int w, int L1, int L2, bool& zadovoljivo, int tolerancija = 30);
 
 private:
     std::set<Krug*> _krugovi;
@@ -47,6 +47,9 @@ private:
     std::set<Krug*> _postavljeniKrugovi;
     int _yPoz;
     QRect _pravougaonik;
+    int _najboljeL = 99999;
+    double _ukupnaPovrsinaKrugova = 0.0;
+    std::vector<Krug*> _opadajuceUrdedjeniKrugovi;
 };
 
 #endif // CIRCULARSTRIPPACKING_H

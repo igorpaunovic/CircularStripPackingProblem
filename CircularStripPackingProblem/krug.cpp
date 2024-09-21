@@ -18,7 +18,6 @@ void Krug::pomeri(QPoint noviCentar) {
 }
 
 void Krug::vrati() {
-    qDebug() << "VRACAM!";
     _centar = _prethodniCentar;
     _boja = Qt::black;
 }
@@ -42,7 +41,6 @@ int Krug::desno() const {
 bool Krug::neSeceKrug(Krug& krug) const {
     int udaljenostX = (_centar.x() - krug._centar.x());
     int udaljenostY = (_centar.y() - krug._centar.y());
-    qDebug() << "Malo je falilo: " << _poluprecnik + krug._poluprecnik << " <= " << ceil(qSqrt(udaljenostX*udaljenostX + udaljenostY*udaljenostY) + 1);
     return (_poluprecnik + krug._poluprecnik <= ceil(qSqrt(udaljenostX*udaljenostX + udaljenostY*udaljenostY)) + 1);
 };
 
@@ -67,7 +65,6 @@ std::vector<QPoint> Krug::ugaoIzmedjuDvaKruga(const Krug &krug1, const Krug &kru
 
     // Slucaj kad je krug dovoljno mali pa ne dodiruje oba kruga istovremeno
     if (r1 + r2 + 2*r3 < int(qSqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2)))) {
-        qDebug() << "Izbego krug";
         return uglovi;
     }
 
@@ -101,27 +98,26 @@ std::vector<QPoint> Krug::ugaoIzmedjuDvaKruga(const Krug &krug1, const Krug &kru
 
         // Ovo je samo jedno resenje, treba da nadjemo refleksiju po liniji koja prolazi kroz centre oba kruga za drugo resenje
         double A, B, C;
-        if (x1 == x2) { // Vertical line case
+        if (x1 == x2) {
             A = 1;
             B = 0;
             C = -x1;
-        } else if (y1 == y2) { // Horizontal line case
+        } else if (y1 == y2) {
             A = 0;
             B = 1;
             C = -y1;
         } else {
-            // Compute coefficients for non-vertical, non-horizontal lines
             A = y2 - y1;
             B = x1 - x2;
             C = x2 * y1 - x1 * y2;
         }
 
-        // Calculate the perpendicular projection of (x1, y1) on the line
+        // Projekcija (x1, y1) na liniju koja prolazi kroz centre kruga
         double denom = A * A + B * B;
         double xProjekcija = (B * (B * x - A * y) - A * C) / denom;
         double yProjekcija = (A * (-B * x + A * y) - B * C) / denom;
 
-        // Calculate the mirror point
+        // Izracunaj refleksiju
         int xMirror = 2 * xProjekcija - x;
         int yMirror = 2 * yProjekcija - y;
 
