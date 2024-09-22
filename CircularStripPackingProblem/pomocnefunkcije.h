@@ -8,6 +8,8 @@
 
 #include <config.h>
 
+#include "ugaonapozicija.h"
+
 namespace pomocneFunkcije {
 int povrsinaTrougla(const QPoint& A, const QPoint& B, const QPoint& C);
 int distanceKvadrat(const QPoint& A, const QPoint& B);
