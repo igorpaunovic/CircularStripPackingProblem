@@ -270,50 +270,35 @@ std::vector<UgaonaPozicija> CircularStripPacking::moguciUglovi(Krug* krug, std::
     return potencijalniUglovi;
 }
 
-std::vector<Cvor> CircularStripPacking::granaj(std::vector<Cvor>& cvorovi) {
+std::vector<Cvor> CircularStripPacking::granaj(std::vector<Cvor>& cvorovi, int brojNajboljih) {
     qDebug() << "granaj";
     std::vector<UgaonaPozicija> sveUgaonePozicije;
 
-    qDebug() << "Broj cvorova: " << cvorovi.size();
-
-    for (Cvor &cvor : cvorovi) {
-        qDebug() << "Cvor: krug: " << cvor._krug._centar << "poluprecnik: " << cvor._krug._poluprecnik << _postavljeniKrugovi.size();
-        qDebug() << "Broj postavljenih krugova: " << cvor._postavljeniKrugovi.size();
-        qDebug() << "Broj preostalih krugova: " << cvor._preostaliKrugovi.size();
-        for (Krug krug : cvor._preostaliKrugovi) {
-            std::vector<UgaonaPozicija> ugaonePozicijeKruga = moguciUglovi(&krug, cvor._postavljeniKrugovi);
+    for (size_t i = 0; i < cvorovi.size(); i++) {
+        Cvor* cvorRef = &cvorovi[i];
+        for (Krug krug : cvorovi[i]._preostaliKrugovi) {
+            std::vector<UgaonaPozicija> ugaonePozicijeKruga = moguciUglovi(&krug, cvorovi[i]._postavljeniKrugovi);
             for (UgaonaPozicija& ugaonaPozicija : ugaonePozicijeKruga) {
-                ugaonaPozicija._cvor = &cvor;
+                ugaonaPozicija._cvor = cvorRef;
                 sveUgaonePozicije.push_back(ugaonaPozicija);
             }
         }
     }
 
-    qDebug() << "Broj cvorova: " << cvorovi.size();
-    qDebug() << "Broj postavljenih krugova: " << cvorovi[0]._postavljeniKrugovi.size();
-    qDebug() << "Broj preostalih krugova: " << cvorovi[0]._preostaliKrugovi.size();
-
-    qDebug() << "Broj ugaonih pozicija: " << sveUgaonePozicije.size();
+    std::sort(sveUgaonePozicije.begin(), sveUgaonePozicije.end(), [](const UgaonaPozicija &a, const UgaonaPozicija &b) {
+        return a._mldp < b._mldp;
+    });
+    int uzmiNajboljih = std::min(brojNajboljih, int(sveUgaonePozicije.size()));
+    sveUgaonePozicije = std::vector<UgaonaPozicija>(sveUgaonePozicije.begin(), sveUgaonePozicije.begin() + uzmiNajboljih);
 
     std::vector<Cvor> decaCvorovi;
-    int i = 0;
     for (UgaonaPozicija ugaonaPozicija : sveUgaonePozicije) {
-        i++;
         ugaonaPozicija.postaviKrug();
-        qDebug() << "Pre kreacije dete cvora " << i << ": ";
-        // qDebug() << "Broj cvorova: " << cvorovi.size();
-        // qDebug() << "Broj postavljenih krugova: " << cvorovi[i-1]._postavljeniKrugovi.size();
-        // qDebug() << "Broj preostalih krugova: " << cvorovi[i-1]._preostaliKrugovi.size();
-
         Cvor deteCvor(*ugaonaPozicija._krug, ugaonaPozicija._cvor->_postavljeniKrugovi,  ugaonaPozicija._cvor->_preostaliKrugovi);
-
-        qDebug() << "Posle kreacije dete cvora " << i << ": ";
-        qDebug() << "Broj cvorova: " << cvorovi.size();
-        qDebug() << "Broj postavljenih krugova: " << deteCvor._postavljeniKrugovi.size();
-        qDebug() << "Broj preostalih krugova: " << deteCvor._preostaliKrugovi.size();
-
         decaCvorovi.push_back(deteCvor);
     }
+
+    qDebug() << "uzeto najboljih cvorova: " << decaCvorovi.size();
     return decaCvorovi;
 }
 
@@ -324,7 +309,9 @@ void CircularStripPacking::PohlepnaMLDPProcedura(Cvor& cvor, double& gustina, bo
     AlgoritamBaza_updateCanvasAndBlock();
 
     qDebug() << "Broj postavljenih krugova: " << _postavljeniKrugovi.size();
-    qDebug() << "Broj preostalih krugova: " << _postavljeniKrugovi.size();
+    qDebug() << "Broj preostalih krugova: " << _preostaliKrugovi.size();
+    qDebug() << "Pocetni cvor: " << cvor._krug._centar << " r: " << cvor._krug._poluprecnik;
+    qDebug() << "Pocetni postavljeni cvor: " << _postavljeniKrugovi[0]._centar << " r: " << _postavljeniKrugovi[0]._poluprecnik;
 
     double povrsinaPostavljenihKrugova = 0.0;
     for (auto it = _preostaliKrugovi.begin(); it != _preostaliKrugovi.end();) {
@@ -369,7 +356,7 @@ std::vector<Cvor> CircularStripPacking::LABP(std::vector<Cvor> B, int w, bool& z
     qDebug() << "Broj preostalih krugova 2: " << B[1]._preostaliKrugovi.size();
 
     qDebug() << "AAAAAAA: "<< Bw.size();
-    for (Cvor cvor: Bw) {
+    for (Cvor& cvor: Bw) {
         qDebug() << cvor._krug._centar;
     }
     for (Cvor cvor : Bw) {
@@ -391,7 +378,6 @@ std::vector<Cvor> CircularStripPacking::LABP(std::vector<Cvor> B, int w, bool& z
 
     w = std::min(w, int(Bw.size()));
     Bw = std::vector<Cvor>(Bw.begin(), Bw.begin() + w);
-    qDebug() << "BEEEE" << Bw.size();
 
     return Bw;
 
