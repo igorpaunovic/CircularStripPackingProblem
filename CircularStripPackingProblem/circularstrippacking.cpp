@@ -308,11 +308,6 @@ void CircularStripPacking::PohlepnaMLDPProcedura(Cvor& cvor, double& gustina, bo
     _preostaliKrugovi = cvor._preostaliKrugovi;
     AlgoritamBaza_updateCanvasAndBlock();
 
-    qDebug() << "Broj postavljenih krugova: " << _postavljeniKrugovi.size();
-    qDebug() << "Broj preostalih krugova: " << _preostaliKrugovi.size();
-    qDebug() << "Pocetni cvor: " << cvor._krug._centar << " r: " << cvor._krug._poluprecnik;
-    qDebug() << "Pocetni postavljeni cvor: " << _postavljeniKrugovi[0]._centar << " r: " << _postavljeniKrugovi[0]._poluprecnik;
-
     double povrsinaPostavljenihKrugova = 0.0;
     for (auto it = _preostaliKrugovi.begin(); it != _preostaliKrugovi.end();) {
         Krug krug = *it;
@@ -329,12 +324,8 @@ void CircularStripPacking::PohlepnaMLDPProcedura(Cvor& cvor, double& gustina, bo
         }
         UgaonaPozicija najboljaPozicija = *najboljaPozicijaIt;
         najboljaPozicija.postaviKrug();
-        qDebug() << "Dodat krug";
         _preostaliKrugovi.erase(it++);
-        qDebug() << "Brisanje iz postavljenih krugova";
         _postavljeniKrugovi.push_back(krug);
-        qDebug() << "Broj postavljenih krugova: " << _postavljeniKrugovi.size();
-        qDebug() << "Broj preostalih krugova: " << _preostaliKrugovi.size();
         AlgoritamBaza_updateCanvasAndBlock();
     }
     gustina = povrsinaPostavljenihKrugova/(_pravougaonik.height()*_pravougaonik.width());
@@ -344,21 +335,8 @@ void CircularStripPacking::PohlepnaMLDPProcedura(Cvor& cvor, double& gustina, bo
 }
 
 std::vector<Cvor> CircularStripPacking::LABP(std::vector<Cvor> B, int w, bool& zadovoljivo) {
-    qDebug() << "LABP";
-    qDebug() << "Broj postavljenih krugova: " << B[0]._postavljeniKrugovi.size();
-    qDebug() << "Broj preostalih krugova: " << B[0]._preostaliKrugovi.size();
     std::vector<Cvor> Bw = granaj(B);
-    qDebug() << "Broj cvorova: " << Bw.size();
-    qDebug() << "Broj postavljenih krugova 1: " << B[0]._postavljeniKrugovi.size();
-    qDebug() << "Broj preostalih krugova 1: " << B[0]._preostaliKrugovi.size();
 
-    qDebug() << "Broj postavljenih krugova 2: " << B[1]._postavljeniKrugovi.size();
-    qDebug() << "Broj preostalih krugova 2: " << B[1]._preostaliKrugovi.size();
-
-    qDebug() << "AAAAAAA: "<< Bw.size();
-    for (Cvor& cvor: Bw) {
-        qDebug() << cvor._krug._centar;
-    }
     for (Cvor cvor : Bw) {
         double gustina;
         bool nadjenoResenje;
@@ -407,7 +385,6 @@ int CircularStripPacking::BSLA(Cvor cvor, int w, int L1, int L2, bool& zadovolji
                 Bw.clear();
             }
         }
-        qDebug() << "Obrnuo ceo while";
         if (zadovoljivo == false) {
             L1 = L;
         }
@@ -417,20 +394,6 @@ int CircularStripPacking::BSLA(Cvor cvor, int w, int L1, int L2, bool& zadovolji
 
 void CircularStripPacking::pokreniAlgoritam()
 {
-    // for (auto it = _nepostavljeniKrugovi.begin(); it != _nepostavljeniKrugovi.end();) {
-    //     Krug* krug = *it;
-    //     std::vector<UgaonaPozicija> potencijalnePozicije = moguciUglovi(krug);
-    //     qDebug() << "Broj mogucih pozicija" << potencijalnePozicije.size();
-    //     if (potencijalnePozicije.size() > 0) {
-    //         krug->pomeri(potencijalnePozicije[0]._pozicija);
-    //         _postavljeniKrugovi.insert(krug);
-    //         qDebug() << "Ostalo postaviti: " << _nepostavljeniKrugovi.size();
-    //         _nepostavljeniKrugovi.erase(it++);
-    //         AlgoritamBaza_updateCanvasAndBlock();
-    //     } else {
-    //         ++it;
-    //     }
-    // }
     size_t index = 0;
     size_t index2 = 3;
     Krug krug = _krugovi[index];
