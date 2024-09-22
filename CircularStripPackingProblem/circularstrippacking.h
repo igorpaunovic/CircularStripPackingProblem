@@ -40,7 +40,7 @@ public:
     std::vector<Cvor> LABP(std::vector<Cvor> B, int w, bool& zadovoljivo);
     void PohlepnaMLDPProcedura(Cvor& cvor, double& gustina, bool& nadjenoResenje);
     int BSLA(Cvor cvor, int w, int L1, int L2, bool& zadovoljivo, int tolerancija = 30);
-    std::vector<Cvor> granaj(std::vector<Cvor>& cvorovi, int brojNajboljih = 4);
+    std::vector<Cvor> granaj(std::vector<Cvor>& cvorovi, int brojNajboljih = 10);
 
 private:
     std::vector<Krug> _krugovi;

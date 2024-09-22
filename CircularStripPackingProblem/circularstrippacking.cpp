@@ -260,7 +260,6 @@ std::vector<UgaonaPozicija> CircularStripPacking::moguciUglovi(Krug* krug, std::
             std::vector<QPoint> ugloviIzmedjuDvaKruga= krug->ugaoIzmedjuDvaKruga(krug1, krug2);
             for (const auto &ugao : ugloviIzmedjuDvaKruga) {
                 potencijalniKrug._centar = ugao;
-                qDebug("DODAT izmedju dva kruga");
                 if (legalanKrug(potencijalniKrug, postavljeniKrugovi)) {
                     potencijalniUglovi.push_back(UgaonaPozicija(ugao, krug, MLDP(potencijalniKrug, postavljeniKrugovi, &krug1, &krug2)));
                 }
@@ -336,7 +335,6 @@ void CircularStripPacking::PohlepnaMLDPProcedura(Cvor& cvor, double& gustina, bo
 
 std::vector<Cvor> CircularStripPacking::LABP(std::vector<Cvor> B, int w, bool& zadovoljivo) {
     std::vector<Cvor> Bw = granaj(B);
-
     for (Cvor cvor : Bw) {
         double gustina;
         bool nadjenoResenje;
@@ -419,12 +417,6 @@ void CircularStripPacking::pokreniAlgoritam()
     }
 
     std::vector<Cvor> B = {Cvor(krug, postavljeniKrugovi, preostaliKrugovi), Cvor(krug2, postavljeniKrugovi2, preostaliKrugovi2)};
-
-    qDebug() << "Broj postavljenih krugova prvog cvora: " << B[0]._postavljeniKrugovi.size();
-    qDebug() << "Broj preostalih krugova prvog cvora: " << B[0]._preostaliKrugovi.size();
-
-    qDebug() << "Broj postavljenih krugova prvog cvora: " << B[1]._postavljeniKrugovi.size();
-    qDebug() << "Broj preostalih krugova prvog cvora: " << B[1]._preostaliKrugovi.size();
     bool zadovoljivo = false;
     LABP(B, 10, zadovoljivo);
 
@@ -521,7 +513,7 @@ void CircularStripPacking::crtajAlgoritam(QPainter *painter) const
         krug.crtaj(painter);
     }
 
-    for (const auto &krug : _krugovi) {
+    for (const auto &krug : _preostaliKrugovi) {
         krug.crtaj(painter);
     }
 }
