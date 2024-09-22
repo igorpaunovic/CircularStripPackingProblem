@@ -24,9 +24,12 @@ public:
     int levo() const;
     int desno() const;
     bool neSeceKrug(Krug& krug) const;
-    bool neSeceKrugove(const std::set<Krug*>& krugovi) const;
+    bool neSeceKrugove(const std::vector<Krug>& krugovi) const;
     std::vector<QPoint> ugaoIzmedjuDvaKruga(const Krug &krug1, const Krug &krug2) const;
     int udaljenostOrKruga(const Krug& krug) const;
+
+    bool operator<(const Krug& other) const;
+    bool operator==(const Krug& other) const;
 
     QPoint _centar;
     QPoint _prethodniCentar;

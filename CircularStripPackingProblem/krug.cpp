@@ -5,6 +5,17 @@ Krug::Krug(const QPoint& centar, int poluprecnik, const QColor& boja, QWidget *p
     : _centar(centar), _poluprecnik(poluprecnik), _boja(boja), _pCrtanja(pCrtanja)
 {};
 
+bool Krug::operator<(const Krug& other) const {
+    if (_centar.x() < other._centar.x()) return true;
+    if (_centar.x() == other._centar.x() && _centar.y() < other._centar.y()) return true;
+    return false;
+}
+
+bool Krug::operator==(const Krug& other) const {
+    if ((_centar.x() == other._centar.x()) && (_centar.y() == other._centar.y()) && (_poluprecnik == other._poluprecnik)) return true;
+    return false;
+}
+
 void Krug::crtaj(QPainter *painter) const {
     painter->setPen(Qt::blue);
     painter->setBrush(_boja);
@@ -44,9 +55,9 @@ bool Krug::neSeceKrug(Krug& krug) const {
     return (_poluprecnik + krug._poluprecnik <= ceil(qSqrt(udaljenostX*udaljenostX + udaljenostY*udaljenostY)) + 1);
 };
 
-bool Krug::neSeceKrugove(const std::set<Krug*>& krugovi) const {
-    for (const auto &krug : krugovi) {
-        if (!neSeceKrug(*krug)) {
+bool Krug::neSeceKrugove(const std::vector<Krug>& krugovi) const {
+    for (Krug krug : krugovi) {
+        if (!neSeceKrug(krug)) {
             return false;
         }
     }
@@ -125,7 +136,6 @@ std::vector<QPoint> Krug::ugaoIzmedjuDvaKruga(const Krug &krug1, const Krug &kru
         uglovi.push_back(QPoint(int(xMirror), int(yMirror)));
         return uglovi;
     } catch (const std::exception &err) {
-        qDebug() << "Ne postoji takav krug";
         return uglovi;
     }
 };

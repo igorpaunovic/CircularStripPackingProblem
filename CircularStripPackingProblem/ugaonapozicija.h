@@ -5,6 +5,8 @@
 
 #include "krug.h"
 
+class Cvor;
+
 enum StranicaPravougaounika {
     Gore,
     Dole,
@@ -33,6 +35,7 @@ public:
     Krug* _krug2;
     StranicaPravougaounika _stranica1;
     StranicaPravougaounika _stranica2;
+    Cvor* _cvor;
 };
 
 #endif // UGAONAPOZICIJA_H
